@@ -4,6 +4,7 @@ using Prism.Navigation;
 using ReactiveUI;
 using System;
 using System.Collections.Generic;
+using System.Reactive.Disposables;
 using System.Text;
 
 namespace MyFirstApp.ViewModels
@@ -17,6 +18,17 @@ namespace MyFirstApp.ViewModels
         {
             get { return _title; }
             set { SetProperty(ref _title, value); }
+        }
+
+        CompositeDisposable deactivateWith;
+        protected CompositeDisposable DeactivateWith
+        {
+            get
+            {
+                if (this.deactivateWith == null)
+                    this.deactivateWith = new CompositeDisposable();
+                return this.deactivateWith;
+            }
         }
 
         public ViewModelBase(INavigationService navigationService)

@@ -3,30 +3,25 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:prism="http://prismlibrary.com"
              prism:ViewModelLocator.AutowireViewModel="True"
-             x:Class="MyFirstApp.Views.AdapterListPage"
+             x:Class="MySecondApp.Views.ScanPage"
              Title="{Binding Title}">
-    <ContentPage.ToolbarItems>
-        <ToolbarItem Text="Scan" Command="{Binding ScanToggle}" />
-    </ContentPage.ToolbarItems>
 
     <ContentPage.Content>
         <StackLayout>
-            <Label Text="Bluetooth LE Test Program" HorizontalOptions="Center" />
             <Button Command="{Binding ScanToggle}">
                 <Button.Triggers>
-                    <DataTrigger TargetType="Button" Binding="{Binding IsScanning}" Value="true">
-                        <Setter Property="Text" Value="Stop Scanning"/>
+                    <DataTrigger TargetType="Button" Binding="{Binding IsScanning}" Value="True">
+                        <Setter Property="Text" Value="Stop Scan" />
                     </DataTrigger>
-                    <DataTrigger TargetType="Button" Binding="{Binding IsScanning}" Value="false">
-                        <Setter Property="Text" Value="Press to scan"/>
+                    <DataTrigger TargetType="Button" Binding="{Binding IsScanning}" Value="False">
+                        <Setter Property="Text" Value="Scan" />
                     </DataTrigger>
                 </Button.Triggers>
             </Button>
-            <Label Text="{Binding adapter_is_scanning}" Margin="10"/>
-            <Label Text="{Binding adapter_status}" Margin="10"/>
-            <Label Text="{Binding connected_devices}" Margin="10"/>
-            <ActivityIndicator IsRunning="{Binding IsScanning}" />
-            <ListView ItemsSource="{Binding Devices}" RowHeight="160" >
+            <Button Text="Open Settings" Command="{Binding OpenSettings}" />
+            <Button Text="Toggle Adapter" Command="{Binding ToggleAdapterState}" />
+
+            <ListView ItemsSource="{Binding Devices}" RowHeight="160">
                 <ListView.Behaviors>
                     <prism:EventToCommandBehavior EventName="ItemTapped"
                                           Command="{Binding SelectDevice}"
@@ -42,7 +37,7 @@
                                         <RowDefinition Height="30" />
                                         <RowDefinition Height="30" />
                                         <RowDefinition Height="30" />
-                                        <RowDefinition Height="30" />
+										<RowDefinition Height="30" />
                                     </Grid.RowDefinitions>
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*" />
@@ -60,15 +55,14 @@
 
                                     <Label Text="{Binding LocalName, StringFormat='Local Name: {0}'}" Grid.Row="4" Grid.Column="0" />
 
-                                    <Label Text="Device Connected" IsVisible="{Binding IsConnected}" BackgroundColor="Yellow" TextColor="Black"  
-                                           HorizontalTextAlignment="Center" Grid.ColumnSpan="2" Grid.Row="4" />
+									<Label Text="Device Connected" IsVisible="{Binding IsConnected}" BackgroundColor="Yellow" TextColor="Black"  HorizontalTextAlignment="Center" Grid.ColumnSpan="2" Grid.Row="4" />
                                 </Grid>
                             </ViewCell.View>
                         </ViewCell>
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
+            <ActivityIndicator IsRunning="{Binding IsScanning}" />
         </StackLayout>
     </ContentPage.Content>
-
 </ContentPage>

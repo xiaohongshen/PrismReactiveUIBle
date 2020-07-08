@@ -1,0 +1,8 @@
+﻿<Application
+    x:Class="MySecondApp.UWP.App"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:MySecondApp.UWP"
+    RequestedTheme="Light">
+
+</Application>
