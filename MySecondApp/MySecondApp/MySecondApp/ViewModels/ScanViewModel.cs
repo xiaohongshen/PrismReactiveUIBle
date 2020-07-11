@@ -24,7 +24,12 @@ namespace MySecondApp.ViewModels
         public ScanViewModel(INavigationService navigationService, IUserDialogs dialogs)
         {
             this.SelectDevice = ReactiveCommand.CreateFromTask<ScanResultViewModel>(
-                x => navigationService.NavToDevice(x.Device)
+                (x) => 
+                {
+                    this.DeactivateWith.Dispose();
+                    navigationService.NavToDevice(x.Device); 
+                    return null; 
+                }
             );
 
             this.OpenSettings = ReactiveCommand.Create(() =>
@@ -116,6 +121,8 @@ namespace MySecondApp.ViewModels
             base.OnNavigatedTo(parameters);
             this.adapter = parameters.GetValue<IAdapter>("adapter");
             this.Title = $"{this.adapter.DeviceName} ({this.adapter.Status})";
+            Debug.WriteLine("OnNavigatingTo is called in scanviewmode");
+
         }
 
 
@@ -125,9 +132,18 @@ namespace MySecondApp.ViewModels
             this.IsScanning = false;
         }
 
-        public override void OnNavigatedTo(INavigationParameters parameters)
+        //public override void OnNavigatedTo(INavigationParameters parameters)
+        //{
+        //    base.OnNavigatedTo(parameters);
+        //    this.adapter = parameters.GetValue<IAdapter>("adapter");
+        //    this.Title = $"{this.adapter.DeviceName} ({this.adapter.Status})";
+
+        //    Debug.WriteLine("OnNavigatedTo is called in scanviewmode");
+        //}
+
+        public override void Initialize(INavigationParameters parameters)
         {
-            base.OnNavigatedTo(parameters);
+            Debug.WriteLine("initalize is called in scanviewmode");
             this.adapter = parameters.GetValue<IAdapter>("adapter");
             this.Title = $"{this.adapter.DeviceName} ({this.adapter.Status})";
         }

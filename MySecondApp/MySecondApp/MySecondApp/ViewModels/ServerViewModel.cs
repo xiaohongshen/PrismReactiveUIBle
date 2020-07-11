@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Text;
@@ -170,5 +171,10 @@ namespace MySecondApp.ViewModels
         void OnEvent(string msg) => Device.BeginInvokeOnMainThread(() =>
             this.Output += msg + Environment.NewLine + Environment.NewLine
         );
+
+        public override void Initialize(INavigationParameters parameters)
+        {
+            Debug.WriteLine("Initialize is called in serverview");
+        }
     }
 }

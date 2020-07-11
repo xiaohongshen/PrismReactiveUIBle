@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Diagnostics;
 using Plugin.BluetoothLE;
+using Prism.Navigation;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 
 
 namespace MySecondApp.ViewModels
 {
-    public class ScanResultViewModel : ViewModel
+    public class ScanResultViewModel 
     {
         //IDisposable nameOb;
         public IDevice Device { get; private set; }
@@ -22,6 +23,10 @@ namespace MySecondApp.ViewModels
         [Reactive] public string LocalName { get; private set; }
         [Reactive] public int TxPower { get; private set; }
 
+        //public override void Initialize(INavigationParameters parameters)
+        //{
+        //    Debug.WriteLine("Initialize is called in scanresultview");
+        //}
 
         public bool TrySet(IScanResult result)
         {

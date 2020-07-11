@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Reactive.Disposables;
 using System.Threading.Tasks;
 using Prism.AppModel;
+using Prism.Mvvm;
 using Prism.Navigation;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
@@ -9,11 +11,7 @@ using ReactiveUI.Fody.Helpers;
 
 namespace MySecondApp.ViewModels
 {
-    public abstract class ViewModel : ReactiveObject,
-                                      INavigatedAware,
-                                      IDestructible,
-                                      IPageLifecycleAware,
-                                      IConfirmNavigationAsync
+    public abstract class ViewModel : ReactiveObject, IInitialize, INavigationAware, IDestructible
     {
         CompositeDisposable deactivateWith;
         protected CompositeDisposable DeactivateWith
@@ -32,6 +30,7 @@ namespace MySecondApp.ViewModels
 
         public virtual void OnNavigatingTo(INavigationParameters parameters)
         {
+            Debug.WriteLine("the base onnavigatedto is called");
         }
 
 
@@ -64,6 +63,8 @@ namespace MySecondApp.ViewModels
 
 
         public virtual Task<bool> CanNavigateAsync(INavigationParameters parameters) => Task.FromResult(true);
+        public abstract void Initialize(INavigationParameters parameters);
+
         [Reactive] public bool IsBusy { get; protected set; }
     }
 }

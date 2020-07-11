@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Linq;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Windows.Input;
 using Acr.Collections;
 using Acr.UserDialogs;
+using Prism.Navigation;
 using ReactiveUI;
 
 
@@ -17,30 +19,19 @@ namespace MySecondApp.ViewModels
 
         public LogViewModel(ILogService logs)
         {
-            this.logs = logs;
-            this.Show = ReactiveCommand.Create<LogItem>(item => UserDialogs.Instance.Alert(item.Message));
-            this.Clear = ReactiveCommand.Create(this.logs.Clear);
+           
         }
 
 
         public override void OnAppearing()
         {
-            base.OnAppearing();
-            var l = this.logs.GetLogs();
-            this.Logs.Clear();
-
-            if (l.Any())
-                this.Logs.AddRange(l);
-
-            this.logs
-                .WhenUpdated()
-                .ObserveOn(RxApp.MainThreadScheduler)
-                .Subscribe(x =>
-                    this.Logs.Insert(0, x)
-                )
-                .DisposeWith(this.DeactivateWith);
+            
         }
 
+        public override void Initialize(INavigationParameters parameters)
+        {
+            Debug.WriteLine("Initialize is called in logview");
+        }
 
         public ObservableList<LogItem> Logs { get; } = new ObservableList<LogItem>();
         public ICommand Show { get; }

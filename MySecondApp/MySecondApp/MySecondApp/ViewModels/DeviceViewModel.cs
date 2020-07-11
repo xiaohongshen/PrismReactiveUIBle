@@ -21,6 +21,7 @@ namespace MySecondApp.ViewModels
 
         public DeviceViewModel(IUserDialogs dialogs)
         {
+            Debug.WriteLine("deviceviewmodel () is called");
             this.SelectCharacteristic = ReactiveCommand.Create<GattCharacteristicViewModel>(x => x.Select());
 
             this.ConnectionToggle = ReactiveCommand.Create(() =>
@@ -102,96 +103,64 @@ namespace MySecondApp.ViewModels
                     x => x.GetValue().Equals("Disconnect")
                 )
             );
-
-           
         }
 
 
-        public override void OnNavigatedTo(INavigationParameters parameters)
+        public override void Initialize(INavigationParameters parameters)
         {
-            base.OnNavigatedTo(parameters);
-
+            Debug.WriteLine("Initialize is called in devicemodel");
             this.device = parameters.GetValue<IDevice>("device");
             this.Name = this.device.Name;
             this.Uuid = this.device.Uuid;
             this.PairingText = this.device.PairingStatus == PairingStatus.Paired ? "Device Paired" : "Pair Device";
 
             this.device
-                .WhenReadRssiContinuously(TimeSpan.FromSeconds(3))
-                .ObserveOn(RxApp.MainThreadScheduler)
-                .Subscribe(x => this.Rssi = x)
-                .DisposeWith(this.DeactivateWith);
+               .WhenStatusChanged()
+               .ObserveOn(RxApp.MainThreadScheduler)
+               .Subscribe(status =>
+               {
+                   switch (status)
+                   {
+                       case ConnectionStatus.Connecting:
+                           this.ConnectText = "Cancel Connection";
+                           //dialogs.Toast("Connecting");
+                           break;
 
-            this.device
-                .WhenStatusChanged()
-                .ObserveOn(RxApp.MainThreadScheduler)
-                .Subscribe(status =>
-                {
-                    switch (status)
-                    {
-                        case ConnectionStatus.Connecting:
-                            this.ConnectText = "Cancel Connection";
-                            break;
+                       case ConnectionStatus.Connected:
+                           this.ConnectText = "Disconnect";
+                           //dialogs.Toast("Connected");
+                           break;
 
-                        case ConnectionStatus.Connected:
-                            this.ConnectText = "Disconnect";
-                            break;
+                       case ConnectionStatus.Disconnected:
+                           this.ConnectText = "Connect";
+                           //dialogs.Toast("Disconnected");
+                           try
+                           {
+                               this.GattCharacteristics.Clear();
+                           }
+                           catch (Exception ex)
+                           {
+                               Console.WriteLine(ex);
+                           }
 
-                        case ConnectionStatus.Disconnected:
-                            this.ConnectText = "Connect";
-                            try
-                            {
-                                this.GattCharacteristics.Clear();
-                            }
-                            catch (Exception ex)
-                            {
-                                Console.WriteLine(ex);
-                            }
+                           break;
+                   }
+               }).DisposeWith(this.DeactivateWith);
 
-                            break;
-                    }
-                })
-                .DisposeWith(this.DeactivateWith);
-
-            this.device
-                .WhenAnyCharacteristicDiscovered()
-                .ObserveOn(RxApp.MainThreadScheduler)
-                .Subscribe(chs =>
-                {
-                    try
-                    {
-                        var service = this.GattCharacteristics.FirstOrDefault(x => x.ShortName.Equals(chs.Service.Uuid.ToString()));
-                        if (service == null)
-                        {
-                            service = new Group<GattCharacteristicViewModel>(
-                                $"{chs.Service.Description} ({chs.Service.Uuid})",
-                                chs.Service.Uuid.ToString()
-                            );
-                            this.GattCharacteristics.Add(service);
-                        }
-
-                        service.Add(new GattCharacteristicViewModel(chs));
-                    }
-                    catch (Exception ex)
-                    {
-                        // eat it
-                        Console.WriteLine(ex);
-                    }
-                })
-                .DisposeWith(this.DeactivateWith);
         }
-
 
         public ICommand ConnectionToggle { get; }
         public ICommand PairToDevice { get; }
         public ICommand RequestMtu { get; }
         public ICommand SelectCharacteristic { get; }
 
+        public ICommand ScanChar { get; }
+
         [Reactive] public string Name { get; private set; }
         [Reactive] public Guid Uuid { get; private set; }
         [Reactive] public string PairingText { get; private set; }
         public ObservableCollection<Group<GattCharacteristicViewModel>> GattCharacteristics { get; } = new ObservableCollection<Group<GattCharacteristicViewModel>>();
-
+        public ObservableCollection<IGattService> testfounditaggservice{ get; set; } = new ObservableCollection<IGattService>();
         [Reactive] public string ConnectText { get; private set; } = "Connect";
         [Reactive] public int Rssi { get; private set; }
     }

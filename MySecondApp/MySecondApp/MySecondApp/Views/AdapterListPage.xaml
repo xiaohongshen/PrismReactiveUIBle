@@ -14,7 +14,10 @@
         <StackLayout>
             <ActivityIndicator IsRunning="{Binding IsBusy}" VerticalOptions="Center" />
             <ListView ItemsSource="{Binding Adapters}">
-
+                <ListView.Behaviors>
+                    <prism:EventToCommandBehavior EventName="ItemTapped"
+                                          Command="{Binding Select}"/>
+                </ListView.Behaviors>
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <TextCell Text="{Binding DeviceName}" />

@@ -7,7 +7,9 @@ using System.Threading;
 using Acr;
 using Acr.UserDialogs;
 using Plugin.BluetoothLE;
+using Prism.Navigation;
 using ReactiveUI;
+using ReactiveUI.Fody.Helpers;
 using Xamarin.Forms;
 
 
@@ -227,5 +229,15 @@ namespace MySecondApp.ViewModels
             return new string(Enumerable.Repeat(chars, length)
                 .Select(s => s[random.Next(s.Length)]).ToArray());
         }
+
+        public override void Initialize(INavigationParameters parameters)
+        {
+            throw new NotImplementedException();
+        }
+
+        //public override void Initialize(INavigationParameters parameters)
+        //{
+        //    throw new NotImplementedException();
+        //}
     }
 }

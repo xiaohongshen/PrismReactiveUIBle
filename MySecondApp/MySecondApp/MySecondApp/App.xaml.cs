@@ -48,8 +48,8 @@ namespace MySecondApp
             containerRegistry.RegisterForNavigation<AdapterPage>();
 
             containerRegistry.RegisterForNavigation<ScanPage,ScanViewModel>();
-            containerRegistry.RegisterForNavigation<LogPage,LogViewModel>();
-            containerRegistry.RegisterForNavigation<ServerPage,ServerViewModel>();
+            //containerRegistry.RegisterForNavigation<LogPage,LogViewModel>();
+            //containerRegistry.RegisterForNavigation<ServerPage,ServerViewModel>();
 
             containerRegistry.RegisterForNavigation<DevicePage,DeviceViewModel>();
         }
