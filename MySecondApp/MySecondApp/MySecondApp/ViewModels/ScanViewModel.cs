@@ -24,12 +24,7 @@ namespace MySecondApp.ViewModels
         public ScanViewModel(INavigationService navigationService, IUserDialogs dialogs)
         {
             this.SelectDevice = ReactiveCommand.CreateFromTask<ScanResultViewModel>(
-                (x) => 
-                {
-                    this.DeactivateWith.Dispose();
-                    navigationService.NavToDevice(x.Device); 
-                    return null; 
-                }
+                x => navigationService.NavToDevice(x.Device)
             );
 
             this.OpenSettings = ReactiveCommand.Create(() =>
@@ -116,36 +111,23 @@ namespace MySecondApp.ViewModels
         }
 
 
-        public override void OnNavigatingTo(INavigationParameters parameters)
-        {
-            base.OnNavigatedTo(parameters);
-            this.adapter = parameters.GetValue<IAdapter>("adapter");
-            this.Title = $"{this.adapter.DeviceName} ({this.adapter.Status})";
-            Debug.WriteLine("OnNavigatingTo is called in scanviewmode");
-
-        }
-
-
         public override void OnAppearing()
         {
             base.OnAppearing();
             this.IsScanning = false;
         }
 
-        //public override void OnNavigatedTo(INavigationParameters parameters)
-        //{
-        //    base.OnNavigatedTo(parameters);
-        //    this.adapter = parameters.GetValue<IAdapter>("adapter");
-        //    this.Title = $"{this.adapter.DeviceName} ({this.adapter.Status})";
-
-        //    Debug.WriteLine("OnNavigatedTo is called in scanviewmode");
-        //}
-
         public override void Initialize(INavigationParameters parameters)
         {
             Debug.WriteLine("initalize is called in scanviewmode");
             this.adapter = parameters.GetValue<IAdapter>("adapter");
             this.Title = $"{this.adapter.DeviceName} ({this.adapter.Status})";
+        }
+
+        public override void OnDisappearing()
+        {
+            base.OnDisappearing();
+            Debug.WriteLine("disapper scanview is done");
         }
 
         public ICommand ScanToggle { get; }

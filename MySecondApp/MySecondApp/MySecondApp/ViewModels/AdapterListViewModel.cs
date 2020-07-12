@@ -26,11 +26,7 @@ namespace MySecondApp.ViewModels
         {
             this.adapterScanner = adapterScanner;
             this.navigationService = navigationService;
-            this.Select = ReactiveCommand.Create(() =>
-            {
-                DeactivateWith.Dispose();
-                this.navigationService.NavToAdapter(this.Adapters.First());
-             });
+            this.Select = ReactiveCommand.CreateFromTask<IAdapter>(navigationService.NavToAdapter);
 
             this.Scan = ReactiveCommand.Create(() =>
             {                
@@ -41,7 +37,7 @@ namespace MySecondApp.ViewModels
                     .Subscribe(
                         this.Adapters.Add,
                         ex => dialogs.Alert(ex.ToString(), "Error"),
-                        () =>
+                        async () =>
                         {
                             this.IsBusy = false;
                             switch (this.Adapters.Count)
@@ -52,10 +48,11 @@ namespace MySecondApp.ViewModels
 
                                 case 1:
                                     var adapter = this.Adapters.First();
+                                    await navigationService.NavToAdapter(adapter);
                                     break;
                             }
                         }
-                    ).DisposeWith(this.DeactivateWith);
+                    );
             },
             this.WhenAny(x => x.IsBusy, x => !x.Value));
         }
@@ -76,16 +73,15 @@ namespace MySecondApp.ViewModels
             }
         }
 
-        public override void Initialize(INavigationParameters parameters)
+        public override void OnDisappearing()
         {
-            Debug.WriteLine("Initialize is called in adaplistviewmodel");
+            base.OnDisappearing();
+            Debug.WriteLine("disapper adaplist is done");
         }
 
-        public override void OnNavigatingTo(INavigationParameters parameters)
+        public override void Initialize(INavigationParameters parameters)
         {
-            Debug.WriteLine("navigating to");
-            DeactivateWith.Dispose();
-
+            
         }
 
         public ObservableCollection<IAdapter> Adapters { get; } = new ObservableCollection<IAdapter>();

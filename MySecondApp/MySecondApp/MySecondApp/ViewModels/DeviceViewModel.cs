@@ -17,11 +17,10 @@ namespace MySecondApp.ViewModels
     public class DeviceViewModel : ViewModel
     {
         IDevice device;
-
-
         public DeviceViewModel(IUserDialogs dialogs)
         {
             Debug.WriteLine("deviceviewmodel () is called");
+
             this.SelectCharacteristic = ReactiveCommand.Create<GattCharacteristicViewModel>(x => x.Select());
 
             this.ConnectionToggle = ReactiveCommand.Create(() =>
@@ -103,6 +102,13 @@ namespace MySecondApp.ViewModels
                     x => x.GetValue().Equals("Disconnect")
                 )
             );
+
+            this.ScanChar = ReactiveCommand.Create(() =>
+            {
+                
+            }
+            );
+
         }
 
 
@@ -114,7 +120,7 @@ namespace MySecondApp.ViewModels
             this.Uuid = this.device.Uuid;
             this.PairingText = this.device.PairingStatus == PairingStatus.Paired ? "Device Paired" : "Pair Device";
 
-            this.device
+            _ = this.device
                .WhenStatusChanged()
                .ObserveOn(RxApp.MainThreadScheduler)
                .Subscribe(status =>
@@ -147,6 +153,22 @@ namespace MySecondApp.ViewModels
                    }
                }).DisposeWith(this.DeactivateWith);
 
+            var step1 = this.device
+                .WhenAnyCharacteristicDiscovered().Buffer(TimeSpan.FromSeconds(1)).ObserveOn(RxApp.TaskpoolScheduler);
+                
+            var step2 = step1.Subscribe(chs =>
+                {
+                try
+                {
+                        chs.LastOrDefault().Service.
+                        Debug.WriteLine("find something");
+                }
+                catch (Exception ex)
+                {
+                    // eat it
+                    Console.WriteLine(ex);
+                }
+            }).DisposeWith(this.DeactivateWith);
         }
 
         public ICommand ConnectionToggle { get; }

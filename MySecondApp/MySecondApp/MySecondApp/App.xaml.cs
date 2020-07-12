@@ -39,13 +39,13 @@ namespace MySecondApp
         {
             containerRegistry.RegisterInstance<IUserDialogs>(UserDialogs.Instance);
             containerRegistry.RegisterInstance<IAdapterScanner>(CrossBleAdapter.AdapterScanner);
-            containerRegistry.RegisterSingleton<ILogService, LogService>();
+           // containerRegistry.RegisterSingleton<ILogService, LogService>();
 
             containerRegistry.RegisterForNavigation<NavigationPage>();
             
 
             containerRegistry.RegisterForNavigation<AdapterListPage, AdapterListViewModel>();
-            containerRegistry.RegisterForNavigation<AdapterPage>();
+            //containerRegistry.RegisterForNavigation<AdapterPage>();
 
             containerRegistry.RegisterForNavigation<ScanPage,ScanViewModel>();
             //containerRegistry.RegisterForNavigation<LogPage,LogViewModel>();

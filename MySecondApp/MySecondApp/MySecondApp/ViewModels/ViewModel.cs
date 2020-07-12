@@ -7,11 +7,11 @@ using Prism.Mvvm;
 using Prism.Navigation;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
-
+using Xamarin.Forms;
 
 namespace MySecondApp.ViewModels
 {
-    public abstract class ViewModel : ReactiveObject, IInitialize, INavigationAware, IDestructible
+    public abstract class ViewModel : ReactiveObject, IInitialize, INavigationAware, IDestructible, IPageLifecycleAware
     {
         CompositeDisposable deactivateWith;
         protected CompositeDisposable DeactivateWith
